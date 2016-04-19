@@ -34,8 +34,8 @@
 #include <ESP8266mDNS.h>
 #include <Servo.h>
 
-const char *ssid = " ";
-const char *password = " ";
+const char *ssid = "";
+const char *password = "";
 
 ESP8266WebServer server ( 80 );
 Servo myservo;
@@ -44,32 +44,66 @@ int pos = 90;
 
 const int led = 13;
 
+char temp[3000];
+
 void handleRoot() {
-	digitalWrite ( led, 1 );
-	char temp[400];
+	digitalWrite ( led, 1 );	
 	int sec = millis() / 1000;
 	int min = sec / 60;
 	int hr = min / 60;
 
-	snprintf ( temp, 400,
-
-"<html>\
+	snprintf ( temp, 3000,
+"<!DOCTYPE html>\
+<html lang=\"en\">\
   <head>\
-    <meta http-equiv='refresh' content='5'/>\
-    <title>ESP8266 Demo</title>\
-    <style>\
-      body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
-    </style>\
+    <meta charset=\"utf-8\">\
+    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->\
+    <title>Turner Onner</title>\    
+    <link href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\" rel=\"stylesheet\">\
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->\
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->\
+    <!--[if lt IE 9]>\
+      <script src=\"https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js\"></script>\
+      <script src=\"https://oss.maxcdn.com/respond/1.4.2/respond.min.js\"></script>\
+    <![endif]-->\
   </head>\
   <body>\
-    <h1>Hello from ESP8266!</h1>\
-    <p>Uptime: %02d:%02d:%02d</p>\
-    <img src=\"/test.svg\" />\
+    <div class=\"container\">\
+      <div class=\"row\">\
+        <div class=\"col-md-12\">\
+          <h1>Welcome to the Amazing Turner Onner!</h1>\
+        </div>\
+      </div>\
+      <div class=\"row\">\
+        <div class=\"col-md-12\">\
+          <button id=\"on_button\" class=\"btn btn-success\">On</button>\
+          <button id=\"off_button\" class=\"btn btn-danger\">Off</button>\
+          <button id=\"status_button\" class=\"btn btn-info\">Status</button>\
+        </div>\
+      </div>\
+    </div>\
+    <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js\"></script>\    
+    <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js\"></script>\
+    <script>\
+      $('#on_button').click(function(){\
+        $('#status_button').removeClass('btn-info').addClass('btn-warning');\
+        $.get('/on', function(data){\
+          $('#status_button').removeClass('btn-warning').addClass('btn-info');\
+        });\
+      });\
+      $('#off_button').click(function(){\
+        $('#status_button').removeClass('btn-info').addClass('btn-warning');\
+        $.get('/off', function(data){\
+          $('#status_button').removeClass('btn-warning').addClass('btn-info');\
+        });\
+      });\      
+    </script>\
   </body>\
 </html>",
 
 // printf format strings
-
 		hr, 
 		min % 60, 
 		sec % 60
